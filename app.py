@@ -9,23 +9,27 @@ criar_tabelas()
 def usuario_logado():
     return "usuario" in session
 
+# ================= LOGIN =================
 @app.route("/", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        usuario = request.form["usuario"]
+        # 🔥 aqui está a melhoria (ignora maiúscula/minúscula)
+        usuario = request.form["usuario"].lower()
         senha = request.form["senha"]
 
         conn = conectar()
         cursor = conn.cursor()
+
         cursor.execute(
             "SELECT * FROM usuarios WHERE usuario = ? AND senha = ?",
             (usuario, senha)
         )
+
         user = cursor.fetchone()
         conn.close()
 
         if user:
-            session["usuario"] = usuario
+            session["usuario"] = usuario.capitalize()  # mostra com letra maiúscula
             return redirect(url_for("dashboard"))
         else:
             flash("Usuário ou senha inválidos.")
@@ -33,11 +37,13 @@ def login():
 
     return render_template("login.html")
 
+# ================= LOGOUT =================
 @app.route("/logout")
 def logout():
     session.pop("usuario", None)
     return redirect(url_for("login"))
 
+# ================= DASHBOARD =================
 @app.route("/dashboard")
 def dashboard():
     if not usuario_logado():
@@ -71,6 +77,7 @@ def dashboard():
         saldo=saldo
     )
 
+# ================= CLIENTES =================
 @app.route("/clientes", methods=["GET", "POST"])
 def clientes():
     if not usuario_logado():
@@ -110,6 +117,7 @@ def clientes():
 
     return render_template("clientes.html", clientes=lista_clientes, busca=busca)
 
+# ================= EDITAR CLIENTE =================
 @app.route("/editar_cliente/<int:id>", methods=["GET", "POST"])
 def editar_cliente(id):
     if not usuario_logado():
@@ -140,6 +148,7 @@ def editar_cliente(id):
 
     return render_template("editar_cliente.html", cliente=cliente)
 
+# ================= EXCLUIR CLIENTE =================
 @app.route("/excluir_cliente/<int:id>")
 def excluir_cliente(id):
     if not usuario_logado():
@@ -154,6 +163,7 @@ def excluir_cliente(id):
     flash("Cliente excluído com sucesso.")
     return redirect(url_for("clientes"))
 
+# ================= FINANCEIRO =================
 @app.route("/financeiro", methods=["GET", "POST"])
 def financeiro():
     if not usuario_logado():
@@ -205,6 +215,7 @@ def financeiro():
         saldo=saldo
     )
 
+# ================= AGENDA =================
 @app.route("/agenda", methods=["GET", "POST"])
 def agenda():
     if not usuario_logado():
@@ -234,6 +245,7 @@ def agenda():
 
     return render_template("agenda.html", compromissos=compromissos)
 
+# ================= EXCLUIR AGENDA =================
 @app.route("/excluir_agenda/<int:id>")
 def excluir_agenda(id):
     if not usuario_logado():
