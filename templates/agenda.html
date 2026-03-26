@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Agenda</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <h2>Painel</h2>
+            <a href="{{ url_for('dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('clientes') }}">Clientes</a>
+            <a href="{{ url_for('financeiro') }}">Financeiro</a>
+            <a href="{{ url_for('agenda') }}">Agenda</a>
+            <a href="{{ url_for('logout') }}">Sair</a>
+        </aside>
+
+        <main class="content">
+            <h1>Agenda</h1>
+
+            {% with messages = get_flashed_messages() %}
+              {% if messages %}
+                {% for msg in messages %}
+                  <div class="alerta">{{ msg }}</div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+
+            <form method="POST" class="form-grid">
+                <input type="text" name="cliente" placeholder="Cliente" required>
+                <input type="text" name="servico" placeholder="Serviço" required>
+                <input type="date" name="data" required>
+                <input type="time" name="hora" required>
+                <button type="submit">Agendar</button>
+            </form>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Cliente</th>
+                        <th>Serviço</th>
+                        <th>Data</th>
+                        <th>Hora</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in compromissos %}
+                    <tr>
+                        <td>{{ item.cliente }}</td>
+                        <td>{{ item.servico }}</td>
+                        <td>{{ item.data }}</td>
+                        <td>{{ item.hora }}</td>
+                        <td>
+                            <a class="btn-excluir" href="{{ url_for('excluir_agenda', id=item.id) }}">Excluir</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </main>
+    </div>
+</body>
+</html>

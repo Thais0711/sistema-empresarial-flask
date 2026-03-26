@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <h2>Painel</h2>
+            <a href="{{ url_for('dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('clientes') }}">Clientes</a>
+            <a href="{{ url_for('financeiro') }}">Financeiro</a>
+            <a href="{{ url_for('agenda') }}">Agenda</a>
+            <a href="{{ url_for('logout') }}">Sair</a>
+        </aside>
+
+        <main class="content">
+            <h1>Bem-vinda, {{ session.usuario }}</h1>
+
+            <div class="cards">
+                <div class="card">
+                    <h3>Clientes</h3>
+                    <p>{{ total_clientes }}</p>
+                </div>
+                <div class="card">
+                    <h3>Agendamentos</h3>
+                    <p>{{ total_agenda }}</p>
+                </div>
+                <div class="card">
+                    <h3>Entradas</h3>
+                    <p>R$ {{ "%.2f"|format(entradas) }}</p>
+                </div>
+                <div class="card">
+                    <h3>Saídas</h3>
+                    <p>R$ {{ "%.2f"|format(saidas) }}</p>
+                </div>
+                <div class="card destaque">
+                    <h3>Saldo</h3>
+                    <p>R$ {{ "%.2f"|format(saldo) }}</p>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

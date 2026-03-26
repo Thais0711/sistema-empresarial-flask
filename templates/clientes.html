@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Clientes</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <h2>Painel</h2>
+            <a href="{{ url_for('dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('clientes') }}">Clientes</a>
+            <a href="{{ url_for('financeiro') }}">Financeiro</a>
+            <a href="{{ url_for('agenda') }}">Agenda</a>
+            <a href="{{ url_for('logout') }}">Sair</a>
+        </aside>
+
+        <main class="content">
+            <h1>Clientes</h1>
+
+            {% with messages = get_flashed_messages() %}
+              {% if messages %}
+                {% for msg in messages %}
+                  <div class="alerta">{{ msg }}</div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+
+            <form method="GET" class="form-busca">
+                <input type="text" name="busca" placeholder="Buscar cliente" value="{{ busca }}">
+                <button type="submit">Buscar</button>
+            </form>
+
+            <form method="POST" class="form-grid">
+                <input type="text" name="nome" placeholder="Nome" required>
+                <input type="text" name="telefone" placeholder="Telefone">
+                <input type="email" name="email" placeholder="E-mail">
+                <input type="text" name="empresa" placeholder="Empresa">
+                <button type="submit">Cadastrar Cliente</button>
+            </form>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Telefone</th>
+                        <th>E-mail</th>
+                        <th>Empresa</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cliente in clientes %}
+                    <tr>
+                        <td>{{ cliente.nome }}</td>
+                        <td>{{ cliente.telefone }}</td>
+                        <td>{{ cliente.email }}</td>
+                        <td>{{ cliente.empresa }}</td>
+                        <td>
+                            <a class="btn-editar" href="{{ url_for('editar_cliente', id=cliente.id) }}">Editar</a>
+                            <a class="btn-excluir" href="{{ url_for('excluir_cliente', id=cliente.id) }}">Excluir</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </main>
+    </div>
+</body>
+</html>

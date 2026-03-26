@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Financeiro</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <h2>Painel</h2>
+            <a href="{{ url_for('dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('clientes') }}">Clientes</a>
+            <a href="{{ url_for('financeiro') }}">Financeiro</a>
+            <a href="{{ url_for('agenda') }}">Agenda</a>
+            <a href="{{ url_for('logout') }}">Sair</a>
+        </aside>
+
+        <main class="content">
+            <h1>Financeiro</h1>
+
+            {% with messages = get_flashed_messages() %}
+              {% if messages %}
+                {% for msg in messages %}
+                  <div class="alerta">{{ msg }}</div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+
+            <div class="cards">
+                <div class="card"><h3>Entradas</h3><p>R$ {{ "%.2f"|format(entradas) }}</p></div>
+                <div class="card"><h3>Saídas</h3><p>R$ {{ "%.2f"|format(saidas) }}</p></div>
+                <div class="card destaque"><h3>Saldo</h3><p>R$ {{ "%.2f"|format(saldo) }}</p></div>
+            </div>
+
+            <form method="POST" class="form-grid">
+                <select name="tipo" required>
+                    <option value="entrada">Entrada</option>
+                    <option value="saida">Saída</option>
+                </select>
+                <input type="text" name="descricao" placeholder="Descrição" required>
+                <input type="text" name="valor" placeholder="Valor" required>
+                <input type="date" name="data" required>
+                <button type="submit">Salvar</button>
+            </form>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tipo</th>
+                        <th>Descrição</th>
+                        <th>Valor</th>
+                        <th>Data</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in movimentacoes %}
+                    <tr>
+                        <td>{{ item.tipo }}</td>
+                        <td>{{ item.descricao }}</td>
+                        <td>R$ {{ "%.2f"|format(item.valor) }}</td>
+                        <td>{{ item.data }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </main>
+    </div>
+</body>
+</html>
